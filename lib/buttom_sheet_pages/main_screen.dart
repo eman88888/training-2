@@ -35,18 +35,10 @@ class _MainScreenState extends State<mains> {
             );
           } else {
             return const Center(
-              child: Text("Error in this screen"),
+              child: Text("there is error"),
             );
           }
         },
-        // listener: (context, state) {
-        //   if (state is UsersError) {
-        //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        //       content: Text("Hello we have error"),
-        //     ));
-        //     print("Hello");
-        //   }
-        // },
       ),
     );
   }

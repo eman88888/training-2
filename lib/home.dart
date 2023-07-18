@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application/second_screen.dart';
@@ -15,6 +16,7 @@ class _MyWidgetState extends State<homepage> {
   Widget build(BuildContext context) {
     final _formkey = GlobalKey<FormState>();
     final TextEditingController emailcontroller = TextEditingController();
+    final TextEditingController passwordcontroller = TextEditingController();
     String email = "";
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 35, 70, 167),
@@ -53,6 +55,7 @@ class _MyWidgetState extends State<homepage> {
             Padding(
               padding: EdgeInsets.all(10),
               child: TextFormField(
+                controller: passwordcontroller,
                 decoration: const InputDecoration(
                   border: UnderlineInputBorder(),
                   labelText: 'password',
@@ -70,7 +73,8 @@ class _MyWidgetState extends State<homepage> {
             CupertinoButton(
               onPressed: () {
                 if (_formkey.currentState!.validate()) {
-                  saveemail(emailcontroller.text);
+                  signinusingfirbase(
+                      emailcontroller.text, passwordcontroller.text);
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -109,5 +113,13 @@ class _MyWidgetState extends State<homepage> {
   saveemail(String email) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("email", email);
+  }
+
+  signinusingfirbase(String email, String password) async {
+    final userCredential = await FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: email, password: password);
+    final user = userCredential.user;
+    print(user?.uid);
+    saveemail(user!.email!);
   }
 }
