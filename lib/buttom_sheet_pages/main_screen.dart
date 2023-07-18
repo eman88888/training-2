@@ -39,14 +39,7 @@ class _MainScreenState extends State<mains> {
             );
           }
         },
-        // listener: (context, state) {
-        //   if (state is UsersError) {
-        //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        //       content: Text("Hello we have error"),
-        //     ));
-        //     print("Hello");
-        //   }
-        // },
+        
       ),
     );
   }
