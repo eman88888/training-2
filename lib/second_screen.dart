@@ -26,7 +26,7 @@ class _MyWidgetState extends State<screenpage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("my screen"),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.blue,
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.exit_to_app_sharp),
