@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application/second_screen.dart';
+import 'package:flutter_application/users_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 class homepage extends StatefulWidget {
   const homepage({super.key});
 
@@ -18,9 +20,8 @@ class _MyWidgetState extends State<homepage> {
     final TextEditingController passwordcontroller = TextEditingController();
     String email = "";
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 35, 70, 167),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.blue,
       ),
       body: SingleChildScrollView(
           child: Form(
@@ -70,17 +71,21 @@ class _MyWidgetState extends State<homepage> {
               padding: EdgeInsets.all(10),
             ),
             CupertinoButton(
-              onPressed: () {
+              onPressed: () async {
                 if (_formkey.currentState!.validate()) {
-                  signinusingfirbase(
+                  bool loginresult = await signinusingfirbase(
                       emailcontroller.text, passwordcontroller.text);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => screenpage(
-                              email: emailcontroller.text,
-                            )),
-                  );
+                  if (loginresult == true) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => userslist()),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text("LOGIN ERROR")));
+                  }
+                } else {
+                  emailcontroller.clear();
                 }
               },
               child: const Text(
@@ -113,11 +118,21 @@ class _MyWidgetState extends State<homepage> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("email", email);
   }
-  signinusingfirbase(String email, String password) async {
-    final userCredential = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email, password: password);
-    final user = userCredential.user;
-    print(user?.uid);
-    saveemail(user!.email!);
+
+  Future<bool> signinusingfirbase(String email, String password) async {
+    bool result = false;
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+      final user = userCredential.user;
+      if (user != null) {
+        print(user?.uid);
+        saveemail(user!.email!);
+        result = true;
+      }
+      return result;
+    } catch (e) {
+      return result;
+    }
   }
 }
